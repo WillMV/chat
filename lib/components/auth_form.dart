@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:chat/components/user_image_picker.dart';
 import 'package:chat/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +20,21 @@ class _AuthFormState extends State<AuthForm> {
   final _formData = AuthFormData();
   final _formKey = GlobalKey<FormState>();
 
+  bool imageError = false;
+
   void _submit() {
-    if (_formKey.currentState!.validate()) widget.handleSubmit(_formData);
+    bool hasImage = _formData.image != null;
+
+    if (_formKey.currentState!.validate() && hasImage) {
+      widget.handleSubmit(_formData);
+    }
+    if (!hasImage) {
+      setState(() => imageError = true);
+    }
+  }
+
+  void _handleImage(File image) {
+    _formData.image = image;
   }
 
   @override
@@ -32,6 +48,11 @@ class _AuthFormState extends State<AuthForm> {
         child: Form(
           key: _formKey,
           child: Column(children: [
+            if (_formData.isSigup)
+              UserImagePicker(
+                onImagePicked: _handleImage,
+                onError: imageError,
+              ),
             if (_formData.isSigup)
               TextFormField(
                 key: const ValueKey('name'),
