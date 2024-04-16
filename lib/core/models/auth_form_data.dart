@@ -17,7 +17,7 @@ class AuthFormData {
 
   String get name => nameController.text;
   String get email => emailController.text;
-  String get passwordname => passwordController.text;
+  String get password => passwordController.text;
 
   String? validateName(String? value) {
     final name = value ?? '';

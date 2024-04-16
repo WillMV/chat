@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:chat/components/user_image_picker.dart';
-import 'package:chat/models/auth_form_data.dart';
+import 'package:chat/core/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
@@ -23,18 +23,14 @@ class _AuthFormState extends State<AuthForm> {
   bool imageError = false;
 
   void _submit() {
-    bool hasImage = _formData.image != null;
-
-    if (_formKey.currentState!.validate() && hasImage) {
+    if (_formKey.currentState!.validate()) {
       widget.handleSubmit(_formData);
-    }
-    if (!hasImage) {
-      setState(() => imageError = true);
     }
   }
 
   void _handleImage(File image) {
     _formData.image = image;
+    setState(() => imageError = false);
   }
 
   @override
@@ -48,12 +44,11 @@ class _AuthFormState extends State<AuthForm> {
         child: Form(
           key: _formKey,
           child: Column(children: [
-            if (_formData.isSigup)
+            if (_formData.isSigup) ...[
               UserImagePicker(
                 onImagePicked: _handleImage,
                 onError: imageError,
               ),
-            if (_formData.isSigup)
               TextFormField(
                 key: const ValueKey('name'),
                 controller: _formData.nameController,
@@ -63,6 +58,7 @@ class _AuthFormState extends State<AuthForm> {
                   label: Text('Nome'),
                 ),
               ),
+            ],
             TextFormField(
               key: const ValueKey('email'),
               controller: _formData.emailController,

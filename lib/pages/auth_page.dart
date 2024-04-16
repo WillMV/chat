@@ -1,5 +1,6 @@
 import 'package:chat/components/auth_form.dart';
-import 'package:chat/models/auth_form_data.dart';
+import 'package:chat/core/models/auth_form_data.dart';
+import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
@@ -10,12 +11,39 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
+  final authSevice = AuthService();
+
   bool isLoading = false;
 
-  void onSubmit(AuthFormData authData) {
-    setState(() {
-      isLoading = !isLoading;
-    });
+  ScaffoldFeatureController _showErrorMessage(Object e) {
+    return ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(e.toString()),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
+  }
+
+  void onSubmit(AuthFormData authData) async {
+    setState(() => isLoading = true);
+    try {
+      if (authData.isLogin) {
+        await authSevice.login(
+          authData.email,
+          authData.password,
+        );
+      } else {
+        await authSevice.signup(
+          authData.name,
+          authData.email,
+          authData.password,
+          authData.image,
+        );
+      }
+    } catch (e) {
+      _showErrorMessage(e);
+    }
+    setState(() => isLoading = false);
   }
 
   @override
