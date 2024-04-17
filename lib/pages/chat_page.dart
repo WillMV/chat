@@ -17,7 +17,7 @@ class ChatPage extends StatelessWidget {
               }
             },
             itemBuilder: (context) => [
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'logout',
                 child:
                     ListTile(leading: Icon(Icons.logout), title: Text('Sair')),
