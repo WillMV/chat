@@ -8,8 +8,8 @@ class AuthMockService implements AuthService {
   static final _testUser = ChatUser(
     id: '69',
     email: 'email@email.com',
-    name: 'user',
-    imageURL: 'imageURL',
+    name: 'User',
+    imageURL: 'assets/images/avatar.png',
   );
 
   static ChatUser? _currentUser = _testUser;
