@@ -17,12 +17,15 @@ class ChatPage extends StatelessWidget {
             builder: (context, value, child) => Stack(
               children: [
                 IconButton(
-                    onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
                         builder: (context) => const NotificationsPage(),
-                      ));
-                    },
-                    icon: const Icon(Icons.notifications)),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.notifications),
+                ),
                 if (value.items.isNotEmpty)
                   Positioned(
                     right: 5,

@@ -32,5 +32,6 @@ class ChatNotificationService with ChangeNotifier {
 
   void delete(int index) {
     _items.removeAt(index);
+    notifyListeners();
   }
 }
