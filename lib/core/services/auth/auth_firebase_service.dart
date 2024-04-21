@@ -6,11 +6,25 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthFirebaseService implements AuthService {
   static ChatUser? _currentUser;
-  static MultiStreamController<ChatUser?>? _controller;
-  static final _userStream = Stream<ChatUser?>.multi((controller) {
-    _controller = controller;
-    _controller!.add(_currentUser);
+
+  static final _userStream = Stream<ChatUser?>.multi((controller) async {
+    final authChanges = FirebaseAuth.instance.authStateChanges();
+    await for (final user in authChanges) {
+      _currentUser = user == null ? null : _toChatUser(user);
+      controller.add(_currentUser);
+    }
   });
+
+  static ChatUser _toChatUser(User user) {
+    return ChatUser(
+      id: user.uid,
+      email: user.email!,
+      name: user.displayName != null
+          ? user.displayName!
+          : user.email!.split('@')[0],
+      imageURL: user.photoURL ?? 'assets/images/avatar.png',
+    );
+  }
 
   @override
   ChatUser? get currentUser {
@@ -40,8 +54,6 @@ class AuthFirebaseService implements AuthService {
     }
 
     credential.user!.updateDisplayName(name);
-
-    _updateUser(ChatUser(id: credential.user!.uid, email: email, name: name));
   }
 
   @override
@@ -54,20 +66,10 @@ class AuthFirebaseService implements AuthService {
     if (credential.user == null) {
       throw Exception('Email ou senha incorretos');
     }
-    _updateUser(ChatUser(
-      id: credential.user!.uid,
-      email: email,
-      name: credential.user!.displayName!,
-    ));
   }
 
   @override
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
-  }
-
-  void _updateUser(ChatUser user) {
-    _currentUser = user;
-    _controller!.add(user);
   }
 }

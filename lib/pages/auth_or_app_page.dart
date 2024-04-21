@@ -24,21 +24,14 @@ class _AuthOrAppPageState extends State<AuthOrAppPage> {
         future: _init(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            print('Future load');
             return const LoadingPage();
           } else {
-            print('Future else');
-
             return StreamBuilder<ChatUser?>(
               stream: AuthService().userChanges,
               builder: (ctx, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  print('Stream load');
-
                   return const LoadingPage();
                 } else {
-                  print('Stream else');
-
                   return snapshot.hasData ? const ChatPage() : const AuthPage();
                 }
               },
