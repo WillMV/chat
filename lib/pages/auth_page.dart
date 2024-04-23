@@ -25,6 +25,8 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void onSubmit(AuthFormData authData) async {
+    if (!mounted) return;
+
     setState(() => isLoading = true);
     try {
       if (authData.isLogin) {
@@ -41,9 +43,12 @@ class _AuthPageState extends State<AuthPage> {
         );
       }
     } catch (e) {
+      if (!mounted) return;
       _showErrorMessage(e);
+    } finally {
+      if (!mounted) return;
+      setState(() => isLoading = false);
     }
-    setState(() => isLoading = false);
   }
 
   @override

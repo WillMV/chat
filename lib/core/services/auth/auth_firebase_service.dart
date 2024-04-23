@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:chat/core/models/chat_user.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthFirebaseService implements AuthService {
   static ChatUser? _currentUser;
@@ -53,7 +54,11 @@ class AuthFirebaseService implements AuthService {
       throw Exception('Conta já cadastrada');
     }
 
+    final imageUrl =
+        await _uploadUserImage(image, '${credential.user!.uid}.jpg');
+
     credential.user!.updateDisplayName(name);
+    credential.user!.updatePhotoURL(imageUrl);
   }
 
   @override
@@ -71,5 +76,16 @@ class AuthFirebaseService implements AuthService {
   @override
   Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
+  }
+
+  Future<String?> _uploadUserImage(File? image, String imageName) async {
+    if (image == null) return null;
+
+    final imageRef =
+        FirebaseStorage.instance.ref().child('usersImage').child(imageName);
+
+    await imageRef.putFile(image);
+
+    return await imageRef.getDownloadURL();
   }
 }
