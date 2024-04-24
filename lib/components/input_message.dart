@@ -1,6 +1,8 @@
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/chat/chat_service.dart';
+import 'package:chat/core/services/notifications/chat_notification_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class InputMessage extends StatefulWidget {
   const InputMessage({super.key});
@@ -19,14 +21,14 @@ class _InputMessageState extends State<InputMessage> {
     super.dispose();
   }
 
-  void _sendMessage() {
+  void _sendMessage() async {
     if (_msg.text.isNotEmpty) {
       final auth = AuthService();
       final currentUser = auth.currentUser;
       if (currentUser == null) {
         auth.logout();
       }
-      ChatService().save(_msg.text, currentUser!);
+      await ChatService().save(_msg.text, currentUser!);
       _focusNode.requestFocus();
       _msg.text = '';
     }
