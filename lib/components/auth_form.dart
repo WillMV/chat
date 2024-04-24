@@ -84,9 +84,13 @@ class _AuthFormState extends State<AuthForm> {
             ElevatedButton(
               onPressed: _submit,
               style: ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(theme.primaryColor),
-                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)))),
+                backgroundColor: MaterialStatePropertyAll(theme.primaryColor),
+                shape: MaterialStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+              ),
               child: Text(
                 _formData.isLogin ? 'Entrar' : 'Cadastrar',
                 style: const TextStyle(color: Colors.white),
