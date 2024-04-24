@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'package:chat/core/models/chat_user.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class AuthFirebaseService implements AuthService {
@@ -44,8 +46,14 @@ class AuthFirebaseService implements AuthService {
     String password,
     File? image,
   ) async {
-    final UserCredential credential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    final signup = await Firebase.initializeApp(
+      name: 'userSignup',
+      options: Firebase.app().options,
+    );
+
+    final auth = FirebaseAuth.instanceFor(app: signup);
+
+    UserCredential credential = await auth.createUserWithEmailAndPassword(
       email: email,
       password: password,
     );
@@ -54,11 +62,18 @@ class AuthFirebaseService implements AuthService {
       throw Exception('Conta já cadastrada');
     }
 
-    final imageUrl =
-        await _uploadUserImage(image, '${credential.user!.uid}.jpg');
+    final imageUrl = await _uploadUserImage(
+      image,
+      '${credential.user!.uid}.jpg',
+    );
 
-    credential.user!.updateDisplayName(name);
-    credential.user!.updatePhotoURL(imageUrl);
+    await credential.user?.updateDisplayName(name);
+    await credential.user?.updatePhotoURL(imageUrl);
+    await signup.delete();
+
+    await login(email, password);
+
+    await _saveChatUser(_currentUser!);
   }
 
   @override
@@ -85,7 +100,16 @@ class AuthFirebaseService implements AuthService {
         FirebaseStorage.instance.ref().child('usersImage').child(imageName);
 
     await imageRef.putFile(image);
+    final photoUrl = await imageRef.getDownloadURL();
 
-    return await imageRef.getDownloadURL();
+    return photoUrl;
+  }
+
+  Future<void> _saveChatUser(ChatUser user) async {
+    await FirebaseFirestore.instance.collection('users').doc(user.id).set({
+      'name': user.name,
+      'email': user.email,
+      'photoUrl': user.imageURL,
+    });
   }
 }
