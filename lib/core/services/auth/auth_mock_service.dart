@@ -43,7 +43,7 @@ class AuthMockService implements AuthService {
     File? image,
   ) async {
     if (_users[email] != null) {
-      throw Exception('Já existe uma conta com esse Email');
+      throw Exception('Já existe uma conta com esse e-mail');
     }
     final newUser = ChatUser(
       id: _users.length.toString(),

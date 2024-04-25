@@ -1,8 +1,6 @@
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/chat/chat_service.dart';
-import 'package:chat/core/services/notifications/chat_notification_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class InputMessage extends StatefulWidget {
   const InputMessage({super.key});
