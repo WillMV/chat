@@ -43,11 +43,8 @@ class _InputMessageState extends State<InputMessage> {
         focusNode: _focusNode,
         onSubmitted: (_) => _sendMessage(),
         textInputAction: TextInputAction.send,
-        textAlignVertical: TextAlignVertical.top,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(
-          // contentPadding: EdgeInsets.zero,
-          contentPadding: const EdgeInsets.only(bottom: 17),
           fillColor: Colors.black12,
           filled: true,
           border: const UnderlineInputBorder(
@@ -56,8 +53,7 @@ class _InputMessageState extends State<InputMessage> {
               Radius.circular(25),
             ),
           ),
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          label: const Text('Mensagem'),
+          hintText: 'Mensagem',
           prefixIcon: const IconButton(
             icon: Icon(Icons.camera_alt_outlined),
             onPressed: null,
