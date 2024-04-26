@@ -112,4 +112,14 @@ class AuthFirebaseService implements AuthService {
       'photoUrl': user.imageURL,
     });
   }
+
+  @override
+  Future<bool> isValidNickName(String nickName) async {
+    final query = await FirebaseFirestore.instance
+        .collection('users')
+        .where('nickName', isEqualTo: nickName)
+        .limit(1)
+        .get();
+    return query.docs.isEmpty;
+  }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:chat/core/models/chat_user.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
@@ -67,5 +68,10 @@ class AuthMockService implements AuthService {
   @override
   Future<void> logout() async {
     _updateUser(null);
+  }
+
+  @override
+  Future<bool> isValidNickName(String _) async {
+    return Random().nextBool();
   }
 }

@@ -16,5 +16,7 @@ abstract class AuthService {
 
   Future<void> logout();
 
+  Future<bool> isValidNickName(String nickName);
+
   factory AuthService() => AuthFirebaseService();
 }
