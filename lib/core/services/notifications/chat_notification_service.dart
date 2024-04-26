@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:chat/core/models/chat_notification.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ class ChatNotificationService with ChangeNotifier {
         value: jsonEncode(_itemsToStringList()),
       );
     } catch (e) {
-      print('error: $e');
+      print('ChatNotificationService.add.Error: $e');
     }
 
     notifyListeners();
@@ -35,6 +34,12 @@ class ChatNotificationService with ChangeNotifier {
       key: 'notifications',
       value: jsonEncode(_itemsToStringList()),
     );
+    notifyListeners();
+  }
+
+  void deleteAll() async {
+    _items.clear();
+    await _storage.deleteAll();
     notifyListeners();
   }
 
@@ -50,17 +55,19 @@ class ChatNotificationService with ChangeNotifier {
   }
 
   Future<void> _getStorageNotifications() async {
-    try {
-      final String? data = await _storage.read(key: 'notifications');
-      if (data == null) return;
-      final List<dynamic> notifications = jsonDecode(data);
-      for (var element in notifications) {
-        _items.add(
-            ChatNotification(title: element['title'], body: element['body']));
+    if (_items.isEmpty) {
+      try {
+        final String? data = await _storage.read(key: 'notifications');
+        if (data == null) return;
+        final List<dynamic> notifications = jsonDecode(data);
+        for (var element in notifications) {
+          _items.add(
+              ChatNotification(title: element['title'], body: element['body']));
+        }
+        notifyListeners();
+      } catch (e) {
+        print('ChatNotificationService._getStorageNotifications.Error: $e');
       }
-      notifyListeners();
-    } catch (e) {
-      print('ChatNotificationService._getStorageNotifications.Error: $e');
     }
   }
 

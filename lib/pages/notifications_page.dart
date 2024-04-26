@@ -10,7 +10,18 @@ class NotificationsPage extends StatelessWidget {
     final ChatNotificationService notifications = Provider.of(context);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              Provider.of<ChatNotificationService>(context, listen: false)
+                  .deleteAll();
+            },
+            icon: const Icon(Icons.delete),
+            tooltip: 'Deletar tudo',
+          )
+        ],
+      ),
       body: ListView.builder(
         itemCount: notifications.items.length,
         itemBuilder: (BuildContext context, int index) {
