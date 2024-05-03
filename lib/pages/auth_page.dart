@@ -1,6 +1,7 @@
 import 'package:chat/components/auth_form.dart';
 import 'package:chat/core/models/auth_form_data.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
+import 'package:chat/pages/nickname_validator_page.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
@@ -12,8 +13,10 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   final authSevice = AuthService();
+  final formData = AuthFormData();
 
   bool isLoading = false;
+  bool nickIsSelected = false;
 
   ScaffoldFeatureController _showErrorMessage(Object e) {
     return ScaffoldMessenger.of(context).showSnackBar(
@@ -24,30 +27,38 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void onSubmit(AuthFormData authData) async {
+  void onsubmitNickname() {
+    setState(() {
+      nickIsSelected = true;
+    });
+  }
+
+  void onSubmit() async {
     if (!mounted) return;
 
     setState(() => isLoading = true);
     try {
-      if (authData.isLogin) {
+      if (formData.isLogin) {
         await authSevice.login(
-          authData.email,
-          authData.password,
+          formData.email,
+          formData.password,
         );
       } else {
         await authSevice.signup(
-          authData.name,
-          authData.email,
-          authData.password,
-          authData.image,
+          formData.name,
+          formData.email,
+          formData.password,
+          formData.image,
         );
       }
     } catch (e) {
-      if (!mounted) return;
-      _showErrorMessage(e);
+      if (mounted) {
+        _showErrorMessage(e);
+      }
     } finally {
-      if (!mounted) return;
-      setState(() => isLoading = false);
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
   }
 
@@ -61,6 +72,7 @@ class _AuthPageState extends State<AuthPage> {
               child: SingleChildScrollView(
                   child: AuthForm(
             handleSubmit: onSubmit,
+            formData: formData,
           ))),
           if (isLoading)
             Container(

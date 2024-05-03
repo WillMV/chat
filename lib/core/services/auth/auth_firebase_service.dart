@@ -114,10 +114,10 @@ class AuthFirebaseService implements AuthService {
   }
 
   @override
-  Future<bool> isValidNickName(String nickName) async {
+  Future<bool> isValidName(String name) async {
     final query = await FirebaseFirestore.instance
         .collection('users')
-        .where('nickName', isEqualTo: nickName)
+        .where('name', isEqualTo: name)
         .limit(1)
         .get();
     return query.docs.isEmpty;

@@ -1,15 +1,17 @@
 import 'dart:io';
 
+import 'package:chat/components/input_name_validator.dart';
 import 'package:chat/components/user_image_picker.dart';
 import 'package:chat/core/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
   final Function handleSubmit;
-
+  final AuthFormData formData;
   const AuthForm({
     super.key,
     required this.handleSubmit,
+    required this.formData,
   });
 
   @override
@@ -17,19 +19,25 @@ class AuthForm extends StatefulWidget {
 }
 
 class _AuthFormState extends State<AuthForm> {
-  final _formData = AuthFormData();
   final _formKey = GlobalKey<FormState>();
 
   bool imageError = false;
+  bool validName = false;
 
   void _submit() {
-    if (_formKey.currentState!.validate()) {
-      widget.handleSubmit(_formData);
+    if (_formKey.currentState!.validate() && validName) {
+      widget.handleSubmit(widget.formData);
     }
   }
 
+  void isValidName(bool isValid) {
+    setState(() {
+      validName = isValid;
+    });
+  }
+
   void _handleImage(File image) {
-    _formData.image = image;
+    widget.formData.image = image;
     setState(() => imageError = false);
   }
 
@@ -44,36 +52,40 @@ class _AuthFormState extends State<AuthForm> {
         child: Form(
           key: _formKey,
           child: Column(children: [
-            if (_formData.isSigup) ...[
+            if (widget.formData.isSigup) ...[
               UserImagePicker(
                 onImagePicked: _handleImage,
                 onError: imageError,
               ),
-              TextFormField(
-                key: const ValueKey('name'),
-                controller: _formData.nameController,
-                keyboardType: TextInputType.name,
-                validator: (value) => _formData.validateName(value),
-                decoration: const InputDecoration(
-                  label: Text('Nome'),
-                ),
-              ),
+              // TextFormField(
+              //   key: const ValueKey('name'),
+              //   controller: widget.formData.nameController,
+              //   keyboardType: TextInputType.name,
+              //   validator: (value) => widget.formData.validateName(value),
+              //   decoration: const InputDecoration(
+              //     label: Text('Nome'),
+              //   ),
+              // ),
+              InputNameValidator(
+                name: widget.formData.nameController,
+                isValidated: isValidName,
+              )
             ],
             TextFormField(
               key: const ValueKey('email'),
-              controller: _formData.emailController,
+              controller: widget.formData.emailController,
               keyboardType: TextInputType.emailAddress,
-              validator: (value) => _formData.validateEmail(value),
+              validator: (value) => widget.formData.validateEmail(value),
               decoration: const InputDecoration(
                 label: Text('Email'),
               ),
             ),
             TextFormField(
               key: const ValueKey('password'),
-              controller: _formData.passwordController,
+              controller: widget.formData.passwordController,
               obscureText: true,
               keyboardType: TextInputType.visiblePassword,
-              validator: (value) => _formData.validatePassword(value),
+              validator: (value) => widget.formData.validatePassword(value),
               decoration: const InputDecoration(
                 label: Text('Senha'),
               ),
@@ -92,18 +104,18 @@ class _AuthFormState extends State<AuthForm> {
                 ),
               ),
               child: Text(
-                _formData.isLogin ? 'Entrar' : 'Cadastrar',
+                widget.formData.isLogin ? 'Entrar' : 'Cadastrar',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
             TextButton(
                 onPressed: () {
                   setState(() {
-                    _formData.toogleAuthMode();
+                    widget.formData.toogleAuthMode();
                   });
                 },
                 child: Text(
-                  _formData.isLogin
+                  widget.formData.isLogin
                       ? 'Criar uma nova conta?'
                       : 'Já possui uma conta?',
                   style: TextStyle(color: theme.primaryColor),

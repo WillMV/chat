@@ -8,7 +8,9 @@ class AuthFormData {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  // final nicknameController = TextEditingController();
   File? image;
+
   AuthMode _mode = AuthMode.login;
 
   bool get isLogin => _mode == AuthMode.login;
