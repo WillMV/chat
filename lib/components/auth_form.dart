@@ -6,12 +6,10 @@ import 'package:chat/core/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 
 class AuthForm extends StatefulWidget {
-  final Function handleSubmit;
-  final AuthFormData formData;
+  final Function(AuthFormData) handleSubmit;
   const AuthForm({
     super.key,
     required this.handleSubmit,
-    required this.formData,
   });
 
   @override
@@ -20,13 +18,14 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
+  final _formData = AuthFormData();
 
   bool imageError = false;
   bool validName = false;
 
   void _submit() {
-    if (_formKey.currentState!.validate() && validName) {
-      widget.handleSubmit(widget.formData);
+    if (_formKey.currentState!.validate() && (validName || _formData.isLogin)) {
+      widget.handleSubmit(_formData);
     }
   }
 
@@ -37,7 +36,7 @@ class _AuthFormState extends State<AuthForm> {
   }
 
   void _handleImage(File image) {
-    widget.formData.image = image;
+    _formData.image = image;
     setState(() => imageError = false);
   }
 
@@ -52,40 +51,40 @@ class _AuthFormState extends State<AuthForm> {
         child: Form(
           key: _formKey,
           child: Column(children: [
-            if (widget.formData.isSigup) ...[
+            if (_formData.isSigup) ...[
               UserImagePicker(
                 onImagePicked: _handleImage,
                 onError: imageError,
               ),
               // TextFormField(
               //   key: const ValueKey('name'),
-              //   controller: widget.formData.nameController,
+              //   controller: _formData.nameController,
               //   keyboardType: TextInputType.name,
-              //   validator: (value) => widget.formData.validateName(value),
+              //   validator: (value) => _formData.validateName(value),
               //   decoration: const InputDecoration(
               //     label: Text('Nome'),
               //   ),
               // ),
               InputNameValidator(
-                name: widget.formData.nameController,
+                name: _formData.nameController,
                 isValidated: isValidName,
               )
             ],
             TextFormField(
               key: const ValueKey('email'),
-              controller: widget.formData.emailController,
+              controller: _formData.emailController,
               keyboardType: TextInputType.emailAddress,
-              validator: (value) => widget.formData.validateEmail(value),
+              validator: (value) => _formData.validateEmail(value),
               decoration: const InputDecoration(
                 label: Text('Email'),
               ),
             ),
             TextFormField(
               key: const ValueKey('password'),
-              controller: widget.formData.passwordController,
+              controller: _formData.passwordController,
               obscureText: true,
               keyboardType: TextInputType.visiblePassword,
-              validator: (value) => widget.formData.validatePassword(value),
+              validator: (value) => _formData.validatePassword(value),
               decoration: const InputDecoration(
                 label: Text('Senha'),
               ),
@@ -104,18 +103,18 @@ class _AuthFormState extends State<AuthForm> {
                 ),
               ),
               child: Text(
-                widget.formData.isLogin ? 'Entrar' : 'Cadastrar',
+                _formData.isLogin ? 'Entrar' : 'Cadastrar',
                 style: const TextStyle(color: Colors.white),
               ),
             ),
             TextButton(
                 onPressed: () {
                   setState(() {
-                    widget.formData.toogleAuthMode();
+                    _formData.toogleAuthMode();
                   });
                 },
                 child: Text(
-                  widget.formData.isLogin
+                  _formData.isLogin
                       ? 'Criar uma nova conta?'
                       : 'Já possui uma conta?',
                   style: TextStyle(color: theme.primaryColor),

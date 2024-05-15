@@ -1,4 +1,4 @@
-import 'package:chat/core/services/auth/auth_service.dart';
+import 'package:chat/core/services/user/user_service.dart';
 import 'package:flutter/material.dart';
 
 class InputNameValidator extends StatefulWidget {
@@ -35,7 +35,7 @@ class _InputNicknameValidatorState extends State<InputNameValidator> {
   }
 
   Future<void> nickValidator() async {
-    final bool isValid = await AuthService().isValidName(widget.name.text);
+    final bool isValid = await UserService().isValidUserName(widget.name.text);
 
     setState(() {
       isValidNick = isValid;
