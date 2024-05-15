@@ -110,16 +110,7 @@ class AuthFirebaseService implements AuthService {
       'name': user.name,
       'email': user.email,
       'photoUrl': user.imageURL,
+      'contacts': [],
     });
-  }
-
-  @override
-  Future<bool> isValidName(String name) async {
-    final query = await FirebaseFirestore.instance
-        .collection('users')
-        .where('name', isEqualTo: name)
-        .limit(1)
-        .get();
-    return query.docs.isEmpty;
   }
 }

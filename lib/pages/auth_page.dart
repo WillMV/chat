@@ -1,7 +1,6 @@
 import 'package:chat/components/auth_form.dart';
 import 'package:chat/core/models/auth_form_data.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
-import 'package:chat/pages/nickname_validator_page.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
@@ -27,13 +26,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void onsubmitNickname() {
-    setState(() {
-      nickIsSelected = true;
-    });
-  }
-
-  void onSubmit() async {
+  void onSubmit(AuthFormData formData) async {
     if (!mounted) return;
 
     setState(() => isLoading = true);
@@ -69,11 +62,12 @@ class _AuthPageState extends State<AuthPage> {
       body: Stack(
         children: [
           Center(
-              child: SingleChildScrollView(
-                  child: AuthForm(
-            handleSubmit: onSubmit,
-            formData: formData,
-          ))),
+            child: SingleChildScrollView(
+              child: AuthForm(
+                handleSubmit: onSubmit,
+              ),
+            ),
+          ),
           if (isLoading)
             Container(
               decoration: const BoxDecoration(color: Colors.black54),
