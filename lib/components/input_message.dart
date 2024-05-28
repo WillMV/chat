@@ -3,7 +3,8 @@ import 'package:chat/core/services/chat/chat_service.dart';
 import 'package:flutter/material.dart';
 
 class InputMessage extends StatefulWidget {
-  const InputMessage({super.key});
+  final String chatId;
+  const InputMessage({super.key, required this.chatId});
 
   @override
   State<InputMessage> createState() => _InputMessageState();
@@ -26,7 +27,7 @@ class _InputMessageState extends State<InputMessage> {
       if (currentUser == null) {
         auth.logout();
       }
-      await ChatService().save(_msg.text, currentUser!);
+      await ChatService(widget.chatId).save(_msg.text, currentUser!);
       _focusNode.requestFocus();
       _msg.text = '';
     }

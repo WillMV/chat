@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ChatPage extends StatelessWidget {
-  const ChatPage({super.key});
+  final String chatId;
+  final String name;
+  const ChatPage({super.key, required this.chatId, required this.name});
 
   @override
   Widget build(BuildContext context) {
@@ -59,11 +61,11 @@ class ChatPage extends StatelessWidget {
             ],
           )
         ]),
-        body: const SafeArea(
+        body: SafeArea(
           child: Column(
             children: [
-              Expanded(child: Messages()),
-              InputMessage(),
+              Expanded(child: Messages(chatId: chatId)),
+              InputMessage(chatId: chatId),
             ],
           ),
         ));

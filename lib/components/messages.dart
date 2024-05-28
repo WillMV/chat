@@ -6,14 +6,15 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class Messages extends StatelessWidget {
-  const Messages({super.key});
+  final String chatId;
+  const Messages({super.key, required this.chatId});
 
   @override
   Widget build(BuildContext context) {
     final currentUser = AuthService().currentUser;
 
     return StreamBuilder<List<ChatMessage?>>(
-      stream: ChatService().messagesStream(),
+      stream: ChatService(chatId).messagesStream(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(

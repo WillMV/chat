@@ -5,11 +5,19 @@ import 'package:chat/core/services/chat/chat_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatFirebaseService implements ChatService {
+  final String chatId;
+  static const String _chatColletion = 'chats';
+  static const String _messagesColletion = 'messages';
+
+  ChatFirebaseService({required this.chatId});
+
   @override
   Stream<List<ChatMessage>> messagesStream() {
     final store = FirebaseFirestore.instance;
     final snapshots = store
-        .collection('/chat')
+        .collection(_chatColletion)
+        .doc(chatId)
+        .collection(_messagesColletion)
         .withConverter(
           fromFirestore: _fromFirestore,
           toFirestore: _toFirestore,
@@ -37,7 +45,9 @@ class ChatFirebaseService implements ChatService {
       final store = FirebaseFirestore.instance;
 
       final docRef = await store
-          .collection('/chat')
+          .collection(_chatColletion)
+          .doc(chatId)
+          .collection(_messagesColletion)
           .withConverter(
               fromFirestore: _fromFirestore, toFirestore: _toFirestore)
           .add(msg);

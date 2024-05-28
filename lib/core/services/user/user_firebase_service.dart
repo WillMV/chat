@@ -1,6 +1,5 @@
 import 'package:chat/core/models/chat_contact.dart';
 import 'package:chat/core/models/chat_message.dart';
-import 'package:chat/core/models/chat_user.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/user/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

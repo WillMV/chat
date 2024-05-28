@@ -49,8 +49,14 @@ class _ContactsPageState extends State<ContactsPage> {
               itemCount: data!.length,
               itemBuilder: (context, index) =>
                   data[index].users[0] != AuthService().currentUser!.id
-                      ? ContactItem(contactId: snapshot.data![index].users[0])
-                      : ContactItem(contactId: snapshot.data![index].users[1]),
+                      ? ContactItem(
+                          contactId: snapshot.data![index].users[0],
+                          chatId: snapshot.data![index].id!,
+                        )
+                      : ContactItem(
+                          contactId: snapshot.data![index].users[1],
+                          chatId: snapshot.data![index].id!,
+                        ),
             );
           },
         ));

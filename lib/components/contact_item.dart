@@ -1,9 +1,11 @@
+import 'package:chat/pages/chat_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class ContactItem extends StatefulWidget {
   final String contactId;
-  const ContactItem({super.key, required this.contactId});
+  final String chatId;
+  const ContactItem({super.key, required this.contactId, required this.chatId});
 
   @override
   State<ContactItem> createState() => _ContactItemState();
@@ -24,10 +26,18 @@ class _ContactItemState extends State<ContactItem> {
           );
         }
         return ListTile(
-          title: Text(snapshot.data?['name']),
+          title: Text(snapshot.data!['name']),
           leading: CircleAvatar(
             backgroundImage: NetworkImage(snapshot.data?['photoUrl']),
           ),
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => ChatPage(
+                  chatId: widget.chatId,
+                  name: snapshot.data!['name'],
+                ),
+              )),
         );
       },
     );
