@@ -2,7 +2,6 @@ import 'package:chat/core/models/chat_user.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/notifications/chat_notification_service.dart';
 import 'package:chat/pages/auth_page.dart';
-import 'package:chat/pages/chat_page.dart';
 import 'package:chat/pages/contacts_page.dart';
 import 'package:chat/pages/loading.dart';
 import 'package:firebase_core/firebase_core.dart';

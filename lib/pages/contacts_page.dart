@@ -1,4 +1,6 @@
 import 'package:chat/components/add_contact_input.dart';
+import 'package:chat/components/contact_item.dart';
+import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/user/user_service.dart';
 import 'package:flutter/material.dart';
 
@@ -42,10 +44,13 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: Text('Que tal adicionar alguém?'),
               );
             }
-
+            final data = snapshot.data;
             return ListView.builder(
-              itemCount: snapshot.data!.length,
-              itemBuilder: (context, index) => Text(snapshot.data![index].id),
+              itemCount: data!.length,
+              itemBuilder: (context, index) =>
+                  data[index].users[0] != AuthService().currentUser!.id
+                      ? ContactItem(contactId: snapshot.data![index].users[0])
+                      : ContactItem(contactId: snapshot.data![index].users[1]),
             );
           },
         ));

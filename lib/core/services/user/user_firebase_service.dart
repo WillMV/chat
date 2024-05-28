@@ -1,11 +1,13 @@
 import 'package:chat/core/models/chat_contact.dart';
+import 'package:chat/core/models/chat_message.dart';
+import 'package:chat/core/models/chat_user.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/user/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserFirebaseService implements UserService {
-  final String userCollection = 'users';
-  final String chatCollection = 'chats';
+  final String _userCollection = 'users';
+  final String _chatCollection = 'chats';
 
   final firestore = FirebaseFirestore.instance;
 
@@ -16,13 +18,13 @@ class UserFirebaseService implements UserService {
     if (currentUser == null) AuthService().logout();
 
     final snapshot = firestore
-        .collection(chatCollection)
+        .collection(_chatCollection)
         .withConverter(
-          fromFirestore: _fromFirestore,
+          fromFirestore: _fromFirestoreToChatContact,
           toFirestore: _toFirestore,
         )
         .where('users', arrayContains: currentUser?.id)
-        .orderBy('lastMessage', descending: true)
+        // .orderBy('lastMessage', descending: true)
         .snapshots();
 
     return snapshot.map((event) => event.docs.map((e) => e.data()).toList());
@@ -45,7 +47,7 @@ class UserFirebaseService implements UserService {
 
     if (currentUser == null) return;
 
-    firestore.collection(userCollection).doc(currentUser.id).update(data);
+    firestore.collection(_userCollection).doc(currentUser.id).update(data);
   }
 
   @override
@@ -55,21 +57,74 @@ class UserFirebaseService implements UserService {
     if (currentUser == null) return false;
 
     final contact = await firestore
-        .collection(userCollection)
+        .collection(_userCollection)
         .where('name', isEqualTo: name)
         .get();
 
     if (contact.docs.isEmpty) return false;
+
+    if (await ifContactExist(contact.docs[0].id)) {
+      throw Exception('Contato já existente');
+    }
+
+    firestore.collection(_chatCollection).add({
+      'name': name,
+      'users': [
+        currentUser.id,
+        contact.docs[0].id,
+      ],
+      'messages': []
+    });
+
     return true;
   }
 
-  static ChatContact _fromFirestore(
+  Future<bool> ifContactExist(String contactId) async {
+    final currentUser = AuthService().currentUser;
+    if (currentUser == null) return false;
+
+    final query = await firestore
+        .collection(_chatCollection)
+        .where('users', arrayContains: currentUser.id)
+        .get();
+
+    if (query.docs.isEmpty) return false;
+
+    for (var doc in query.docs) {
+      final data = doc.data();
+      final users = data['users'];
+      final hasContact = users[0] == {contactId} || users[1] == {contactId};
+
+      if (hasContact) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  static ChatContact _fromFirestoreToChatContact(
       DocumentSnapshot<Map<String, dynamic>> contact,
       SnapshotOptions? options) {
+    final data = contact.data();
+    final users = data?['users'] as List;
+    final messages = data?['messages'] as List;
+
     return ChatContact(
       id: contact.id,
-      users: contact['users'],
-      messages: contact['messages'],
+      users: users.map((e) => e.toString()).toList(),
+      messages: messages.isEmpty
+          ? []
+          : messages
+              .map((e) => ChatMessage(
+                    id: e['id'],
+                    text: e['text'],
+                    createdAt: e['createdAt'],
+                    userId: e['userId'],
+                    userName: e['userName'],
+                    userImage: e['userImage'],
+                  ))
+              .toList(),
     );
   }
 

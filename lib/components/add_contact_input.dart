@@ -1,3 +1,4 @@
+import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/user/user_service.dart';
 import 'package:flutter/material.dart';
 
@@ -14,19 +15,36 @@ class _AddContactInputState extends State<AddContactInput> {
   final name = TextEditingController();
 
   bool isLoading = false;
-  bool isAdded = false;
 
-  _addContact() async {
+  String? errorMessage;
+
+  void _addContact() async {
     setState(() {
       isLoading = true;
     });
 
-    final findContact = await UserService().addContact(name.text);
+    final currentUser = AuthService().currentUser;
 
-    setState(() {
-      isAdded = findContact;
-    });
+    if (currentUser!.name == name.text) {
+      setState(() {
+        errorMessage = 'É você mesmo :/';
+      });
+    } else {
+      final findContact = await UserService()
+          .addContact(name.text)
+          .onError((error, stackTrace) {
+        setState(() {
+          errorMessage = error.toString().split(': ')[1];
+        });
+        return true;
+      });
 
+      if (!findContact) {
+        setState(() {
+          errorMessage = 'Usuário não encontrado';
+        });
+      }
+    }
     _formKey.currentState!.validate();
 
     setState(() {
@@ -52,9 +70,7 @@ class _AddContactInputState extends State<AddContactInput> {
           child: TextFormField(
             controller: name,
             validator: (value) {
-              print(isAdded);
-              if (isAdded) return null;
-              return 'Usuário não encontrado';
+              return errorMessage;
             },
             decoration: const InputDecoration(
               border: OutlineInputBorder(),
