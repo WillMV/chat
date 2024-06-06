@@ -16,6 +16,10 @@ class _ContactsPageState extends State<ContactsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          title: const Text(
+            'Contatos',
+            style: TextStyle(color: Colors.black),
+          ),
           actions: [
             IconButton(
                 onPressed: () {

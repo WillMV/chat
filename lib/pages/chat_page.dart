@@ -14,7 +14,7 @@ class ChatPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Chat'), actions: [
+        appBar: AppBar(title: Text(name), actions: [
           Consumer<ChatNotificationService>(
             builder: (context, value, child) => Stack(
               children: [
