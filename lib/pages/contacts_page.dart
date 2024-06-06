@@ -31,7 +31,21 @@ class _ContactsPageState extends State<ContactsPage> {
                             child: AddContactInput(),
                           ));
                 },
-                icon: const Icon(Icons.person_add_alt_1))
+                icon: const Icon(Icons.person_add_alt_1)),
+            PopupMenuButton(
+              initialValue: 0,
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 1,
+                  child: Text('Logout'),
+                )
+              ],
+              onSelected: (value) {
+                if (value == 1) {
+                  AuthService().logout();
+                }
+              },
+            )
           ],
         ),
         body: StreamBuilder(

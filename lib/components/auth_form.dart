@@ -56,15 +56,6 @@ class _AuthFormState extends State<AuthForm> {
                 onImagePicked: _handleImage,
                 onError: imageError,
               ),
-              // TextFormField(
-              //   key: const ValueKey('name'),
-              //   controller: _formData.nameController,
-              //   keyboardType: TextInputType.name,
-              //   validator: (value) => _formData.validateName(value),
-              //   decoration: const InputDecoration(
-              //     label: Text('Nome'),
-              //   ),
-              // ),
               InputNameValidator(
                 name: _formData.nameController,
                 isValidated: isValidName,
