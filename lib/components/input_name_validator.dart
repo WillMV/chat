@@ -55,7 +55,7 @@ class _InputNicknameValidatorState extends State<InputNameValidator> {
         suffixIcon: FutureBuilder(
           future: selectIconByValidator(),
           builder: (context, snapshot) =>
-              snapshot.data == null ? const Spacer() : snapshot.data!,
+              snapshot.data == null ? const Text('') : snapshot.data!,
         ),
       ),
     );

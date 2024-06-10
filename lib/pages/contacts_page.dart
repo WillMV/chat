@@ -2,6 +2,7 @@ import 'package:chat/components/add_contact_input.dart';
 import 'package:chat/components/contact_item.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/user/user_service.dart';
+import 'package:chat/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 
 class ContactsPage extends StatefulWidget {
@@ -27,7 +28,9 @@ class _ContactsPageState extends State<ContactsPage> {
                       context: context,
                       builder: (context) => const Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 18),
+                              horizontal: 10,
+                              vertical: 18,
+                            ),
                             child: AddContactInput(),
                           ));
                 },
@@ -38,11 +41,21 @@ class _ContactsPageState extends State<ContactsPage> {
                 const PopupMenuItem(
                   value: 1,
                   child: Text('Logout'),
-                )
+                ),
+                const PopupMenuItem(
+                  value: 2,
+                  child: Text('Configurações'),
+                ),
               ],
               onSelected: (value) {
                 if (value == 1) {
                   AuthService().logout();
+                }
+
+                if (value == 2) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const SettingsPage(),
+                  ));
                 }
               },
             )
@@ -62,7 +75,15 @@ class _ContactsPageState extends State<ContactsPage> {
                 child: Text('Que tal adicionar alguém?'),
               );
             }
+
+            if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: Text('Que tal adicionar alguém?'),
+              );
+            }
+
             final data = snapshot.data;
+
             return ListView.builder(
               itemCount: data!.length,
               itemBuilder: (context, index) =>
