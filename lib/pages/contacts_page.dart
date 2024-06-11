@@ -42,10 +42,10 @@ class _ContactsPageState extends State<ContactsPage> {
                   value: 1,
                   child: Text('Logout'),
                 ),
-                const PopupMenuItem(
-                  value: 2,
-                  child: Text('Configurações'),
-                ),
+                // const PopupMenuItem(
+                //   value: 2,
+                //   child: Text('Configurações'),
+                // ),
               ],
               onSelected: (value) {
                 if (value == 1) {
