@@ -21,8 +21,8 @@ class _ContactItemState extends State<ContactItem> {
           .get(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: LinearProgressIndicator(),
+          return const ListTile(
+            title: LinearProgressIndicator(),
           );
         }
         return ListTile(
