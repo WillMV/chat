@@ -1,6 +1,5 @@
 import 'package:chat/components/input_message.dart';
 import 'package:chat/components/messages.dart';
-import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/notifications/chat_notification_service.dart';
 import 'package:chat/pages/notifications_page.dart';
 import 'package:flutter/material.dart';
@@ -46,20 +45,6 @@ class ChatPage extends StatelessWidget {
               ],
             ),
           ),
-          PopupMenuButton(
-            onSelected: (value) {
-              if (value == 'logout') {
-                AuthService().logout();
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'logout',
-                child:
-                    ListTile(leading: Icon(Icons.logout), title: Text('Sair')),
-              ),
-            ],
-          )
         ]),
         body: SafeArea(
           child: Column(

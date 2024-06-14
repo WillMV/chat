@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UserImagePicker extends StatefulWidget {
-  final Function onImagePicked;
+  final Function(File?) onImagePicked;
   final bool onError;
 
   const UserImagePicker(
@@ -68,9 +69,11 @@ class _UserImagePickerState extends State<UserImagePicker> {
   }
 
   CircleAvatar userAvatar() {
+    final user = AuthService().currentUser;
     return _image == null
-        ? const CircleAvatar(
+        ? CircleAvatar(
             backgroundColor: Colors.grey,
+            backgroundImage: user == null ? null : NetworkImage(user.imageURL!),
             radius: 40,
           )
         : CircleAvatar(

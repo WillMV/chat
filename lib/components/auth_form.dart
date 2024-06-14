@@ -35,7 +35,7 @@ class _AuthFormState extends State<AuthForm> {
     });
   }
 
-  void _handleImage(File image) {
+  void _handleImage(File? image) {
     _formData.image = image;
     setState(() => imageError = false);
   }

@@ -76,6 +76,17 @@ class AuthFirebaseService implements AuthService {
     await _saveChatUser(_currentUser!);
   }
 
+  Future<void> updateImage(File image) async {
+    final imageUrl = await _uploadUserImage(image, '${currentUser!.id}.jpg');
+    await FirebaseAuth.instance.currentUser!.updatePhotoURL(imageUrl);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser!.id)
+        .update({'photoUrl': imageUrl});
+
+    _currentUser!.imageURL = imageUrl;
+  }
+
   @override
   Future<void> login(String email, String password) async {
     final UserCredential credential =

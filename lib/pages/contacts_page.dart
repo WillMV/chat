@@ -23,29 +23,30 @@ class _ContactsPageState extends State<ContactsPage> {
           ),
           actions: [
             IconButton(
-                onPressed: () {
-                  showModalBottomSheet(
-                      context: context,
-                      builder: (context) => const Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 18,
-                            ),
-                            child: AddContactInput(),
-                          ));
-                },
-                icon: const Icon(Icons.person_add_alt_1)),
+              onPressed: () {
+                showModalBottomSheet(
+                    context: context,
+                    builder: (context) => const Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 18,
+                          ),
+                          child: AddContactInput(),
+                        ));
+              },
+              icon: const Icon(Icons.person_add_alt_1),
+            ),
             PopupMenuButton(
               initialValue: 0,
               itemBuilder: (context) => [
                 const PopupMenuItem(
+                  value: 2,
+                  child: Text('Configurações'),
+                ),
+                const PopupMenuItem(
                   value: 1,
                   child: Text('Logout'),
                 ),
-                // const PopupMenuItem(
-                //   value: 2,
-                //   child: Text('Configurações'),
-                // ),
               ],
               onSelected: (value) {
                 if (value == 1) {
@@ -53,9 +54,11 @@ class _ContactsPageState extends State<ContactsPage> {
                 }
 
                 if (value == 2) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SettingsPage(),
-                  ));
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const SettingsPage(),
+                    ),
+                  );
                 }
               },
             )
