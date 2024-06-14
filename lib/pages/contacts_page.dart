@@ -16,91 +16,89 @@ class _ContactsPageState extends State<ContactsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            'Contatos',
-            style: TextStyle(color: Colors.black),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) => const Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 18,
-                          ),
-                          child: AddContactInput(),
-                        ));
-              },
-              icon: const Icon(Icons.person_add_alt_1),
-            ),
-            PopupMenuButton(
-              initialValue: 0,
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 2,
-                  child: Text('Configurações'),
-                ),
-                const PopupMenuItem(
-                  value: 1,
-                  child: Text('Logout'),
-                ),
-              ],
-              onSelected: (value) {
-                if (value == 1) {
-                  AuthService().logout();
-                }
-
-                if (value == 2) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const SettingsPage(),
-                    ),
-                  );
-                }
-              },
-            )
-          ],
+      appBar: AppBar(
+        title: const Text(
+          'Contatos',
+          style: TextStyle(color: Colors.black),
         ),
-        body: StreamBuilder(
-          stream: UserService().getContacts(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
+        actions: [
+          PopupMenuButton(
+            initialValue: 0,
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 2,
+                child: Text('Configurações'),
+              ),
+              const PopupMenuItem(
+                value: 1,
+                child: Text('Logout'),
+              ),
+            ],
+            onSelected: (value) {
+              if (value == 1) {
+                AuthService().logout();
+              }
 
-            if (!snapshot.hasData) {
-              return const Center(
-                child: Text('Que tal adicionar alguém?'),
-              );
-            }
-
-            if (snapshot.data!.isEmpty) {
-              return const Center(
-                child: Text('Que tal adicionar alguém?'),
-              );
-            }
-
-            final data = snapshot.data;
-
-            return ListView.builder(
-              itemCount: data!.length,
-              itemBuilder: (context, index) =>
-                  data[index].users[0] != AuthService().currentUser!.id
-                      ? ContactItem(
-                          contactId: snapshot.data![index].users[0],
-                          chatId: snapshot.data![index].id!,
-                        )
-                      : ContactItem(
-                          contactId: snapshot.data![index].users[1],
-                          chatId: snapshot.data![index].id!,
-                        ),
+              if (value == 2) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SettingsPage(),
+                  ),
+                );
+              }
+            },
+          )
+        ],
+      ),
+      body: StreamBuilder(
+        stream: UserService().getContacts(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
             );
-          },
-        ));
+          }
+
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text('Que tal adicionar alguém?'),
+            );
+          }
+
+          if (snapshot.data!.isEmpty) {
+            return const Center(
+              child: Text('Que tal adicionar alguém?'),
+            );
+          }
+
+          final data = snapshot.data;
+
+          return ListView.builder(
+            itemCount: data!.length,
+            itemBuilder: (context, index) =>
+                data[index].users[0] != AuthService().currentUser!.id
+                    ? ContactItem(
+                        contactId: snapshot.data![index].users[0],
+                        chatId: snapshot.data![index].id!,
+                      )
+                    : ContactItem(
+                        contactId: snapshot.data![index].users[1],
+                        chatId: snapshot.data![index].id!,
+                      ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+          child: const Icon(Icons.person_add),
+          onPressed: () => showModalBottomSheet(
+              context: context,
+              builder: (context) => const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 18,
+                    ),
+                    child: AddContactInput(),
+                  ))),
+    );
   }
 }
