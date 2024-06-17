@@ -1,5 +1,4 @@
 import 'package:chat/core/models/chat_contact.dart';
-import 'package:chat/core/models/chat_message.dart';
 import 'package:chat/core/services/auth/auth_service.dart';
 import 'package:chat/core/services/user/user_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -92,7 +91,7 @@ class UserFirebaseService implements UserService {
     for (var doc in query.docs) {
       final data = doc.data();
       final users = data['users'];
-      final hasContact = users[0] == {contactId} || users[1] == {contactId};
+      final hasContact = (users[0] == contactId) || (users[1] == contactId);
 
       if (hasContact) {
         return true;
@@ -107,23 +106,10 @@ class UserFirebaseService implements UserService {
       SnapshotOptions? options) {
     final data = contact.data();
     final users = data?['users'] as List;
-    final messages = data?['messages'] as List;
 
     return ChatContact(
       id: contact.id,
       users: users.map((e) => e.toString()).toList(),
-      messages: messages.isEmpty
-          ? []
-          : messages
-              .map((e) => ChatMessage(
-                    id: e['id'],
-                    text: e['text'],
-                    createdAt: e['createdAt'],
-                    userId: e['userId'],
-                    userName: e['userName'],
-                    userImage: e['userImage'],
-                  ))
-              .toList(),
     );
   }
 
@@ -131,7 +117,6 @@ class UserFirebaseService implements UserService {
       ChatContact contact, SetOptions? options) {
     return {
       'users': contact.users,
-      'messages': contact.messages,
     };
   }
 }
