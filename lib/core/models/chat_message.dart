@@ -5,7 +5,7 @@ class ChatMessage {
 
   final String userId;
   final String userName;
-  final String userImage;
+  final String? userImage;
 
   ChatMessage({
     required this.id,
