@@ -3,7 +3,6 @@ import 'package:chat/view/components/auth_form.dart';
 import 'package:chat/core/models/auth_form_data.dart';
 import 'package:chat/utils/custom_exception.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});

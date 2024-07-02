@@ -52,9 +52,7 @@ class AuthRepository extends IAuthRepository {
     return ChatUser(
       id: user.uid,
       email: user.email!,
-      name: user.displayName != null
-          ? user.displayName!
-          : user.email!.split('@')[0],
+      name: user.displayName!,
       imageUrl: user.photoURL ?? 'assets/images/avatar.png',
     );
   }
