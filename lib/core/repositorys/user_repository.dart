@@ -36,7 +36,7 @@ class UserRepository extends IUserRepository {
   }
 
   @override
-  Future<ChatUser> getUserByName(String name) async {
+  Future<ChatUser?> getUserByName(String name) async {
     final query = await store
         .collection(USER_COLLECTION)
         .withConverter(
@@ -44,8 +44,9 @@ class UserRepository extends IUserRepository {
             toFirestore: _fromChatUserToFirestore)
         .where('name', isEqualTo: name)
         .get();
+    final result = query.docs.isEmpty ? null : query.docs[0].data();
 
-    return query.docs[0].data();
+    return result;
   }
 
   @override

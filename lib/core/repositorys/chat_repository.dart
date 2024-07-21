@@ -19,21 +19,6 @@ class ChatRepository extends IChatRepository {
     return snapshots.map((event) => event.docs.map((e) => e.data()).toList());
   }
 
-  @override
-  Future<ChatMessage?> save(String chatId, ChatMessage message) async {
-    final docRef = await store
-        .collection(CHAT_COLLECTION)
-        .doc(chatId)
-        .collection(MESSAGES_COLLECTION)
-        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
-        .add(message);
-
-    final doc = await docRef
-        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
-        .get();
-    return doc.data();
-  }
-
   static Map<String, dynamic> _toFirestore(
       //TODO: Verificar de deixo a responsabilidade de conversão na service.
 
@@ -62,5 +47,33 @@ class ChatRepository extends IChatRepository {
       userName: msg['userName'],
       userImage: msg['userImage'],
     );
+  }
+
+  @override
+  Future<ChatMessage?> save({
+    required String chatId,
+    required String userId,
+    required String userName,
+    required String text,
+    required String userImage,
+  }) async {
+    final message = ChatMessage(
+        id: chatId,
+        text: text,
+        createdAt: DateTime.now(),
+        userId: userId,
+        userName: userName,
+        userImage: userImage);
+    final docRef = await store
+        .collection(CHAT_COLLECTION)
+        .doc(chatId)
+        .collection(MESSAGES_COLLECTION)
+        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .add(message);
+
+    final doc = await docRef
+        .withConverter(fromFirestore: _fromFirestore, toFirestore: _toFirestore)
+        .get();
+    return doc.data();
   }
 }

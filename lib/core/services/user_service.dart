@@ -19,7 +19,7 @@ class UserService extends IUserService {
   Future<bool> isValidUserName(String name) async {
     final user = await userRepository.getUserByName(name);
 
-    if (user.id.isNotEmpty) {
+    if (user == null) {
       return true;
     }
     return false;

@@ -12,8 +12,6 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  final formData = AuthFormData();
-
   bool isLoading = false;
   bool nickIsSelected = false;
 

@@ -1,11 +1,10 @@
 import 'package:chat/core/interfaces/controllers/auth_controller.dart';
-import 'package:chat/core/interfaces/services/auth_service.dart';
 import 'package:chat/core/models/chat_user.dart';
 import 'package:chat/core/services/auth_service.dart';
 import 'package:flutter/foundation.dart';
 
 class AuthController extends IAuthController with ChangeNotifier {
-  late IAuthService _authService;
+  late AuthService _authService;
   AuthController({required super.authRepository}) {
     _authService = AuthService(authRepository: authRepository);
   }

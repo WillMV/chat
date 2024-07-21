@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:chat/core/controller/auth_controller.dart';
-import 'package:chat/core/controller/user_controller.dart';
 import 'package:chat/view/components/user_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,9 +1,9 @@
 import 'package:chat/core/interfaces/controllers/controller.dart';
-import 'package:chat/core/interfaces/repositorys/auth_repository.dart';
 import 'package:chat/core/models/chat_user.dart';
+import 'package:chat/core/repositorys/auth_repository.dart';
 
 abstract class IAuthController implements IController {
-  final IAuthRepository authRepository;
+  final AuthRepository authRepository;
 
   IAuthController({required this.authRepository});
 

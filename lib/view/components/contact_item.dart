@@ -26,7 +26,7 @@ class _ContactItemState extends State<ContactItem> {
             title: LinearProgressIndicator(),
           );
         }
-        if (snapshot.hasError) {
+        if (snapshot.hasError || !snapshot.hasData) {
           //TODO: Provisório, implementar snackBar? após 5 segs retornar
           Center(
             child: Text(snapshot.error.toString()),
@@ -34,6 +34,7 @@ class _ContactItemState extends State<ContactItem> {
         }
         final user = snapshot.data!;
         return ListTile(
+          key: const Key('contact_item'),
           title: Text(user.name),
           leading: showUserImg(user.imageUrl),
           onTap: () => Navigator.push(

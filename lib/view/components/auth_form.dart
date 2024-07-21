@@ -1,7 +1,5 @@
-import 'dart:io';
 import 'package:chat/core/controller/auth_controller.dart';
 import 'package:chat/view/components/input_name_validator.dart';
-import 'package:chat/view/components/user_image_picker.dart';
 import 'package:chat/core/models/auth_form_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,14 +29,7 @@ class _AuthFormState extends State<AuthForm> {
   }
 
   void isValidName(bool isValid) {
-    setState(() {
-      validName = isValid;
-    });
-  }
-
-  void _handleImage(File? image) {
-    _formData.image = image;
-    setState(() => imageError = false);
+    validName = isValid;
   }
 
   @override
@@ -55,10 +46,6 @@ class _AuthFormState extends State<AuthForm> {
           key: _formKey,
           child: Column(children: [
             if (_formData.isSigup) ...[
-              UserImagePicker(
-                onImagePicked: _handleImage,
-                onError: imageError,
-              ),
               InputNameValidator(
                 name: _formData.nameController,
                 isValidated: isValidName,
@@ -87,6 +74,7 @@ class _AuthFormState extends State<AuthForm> {
               height: 20,
             ),
             ElevatedButton(
+              key: const Key('submit_button'),
               onPressed: () => _submit(authController),
               style: ButtonStyle(
                 backgroundColor: MaterialStatePropertyAll(theme.primaryColor),
@@ -102,6 +90,7 @@ class _AuthFormState extends State<AuthForm> {
               ),
             ),
             TextButton(
+                key: const Key('login_or_singup_button'),
                 onPressed: () {
                   setState(() {
                     _formData.toogleAuthMode();

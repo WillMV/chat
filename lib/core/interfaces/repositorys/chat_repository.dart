@@ -9,5 +9,10 @@ abstract class IChatRepository implements IRepository {
   });
 
   Stream<List<ChatMessage>> messagesStream(String chatId);
-  Future<ChatMessage?> save(String chatId, ChatMessage message);
+  Future<ChatMessage?> save(
+      {required String chatId,
+      required String userId,
+      required String userName,
+      required String text,
+      required String userImage});
 }

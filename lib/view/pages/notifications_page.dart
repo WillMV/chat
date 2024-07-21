@@ -14,8 +14,7 @@ class NotificationsPage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Provider.of<NotificationController>(context, listen: false)
-                  .deleteAll();
+              notifications.deleteAll();
             },
             icon: const Icon(Icons.delete),
             tooltip: 'Deletar tudo',
@@ -26,7 +25,8 @@ class NotificationsPage extends StatelessWidget {
         itemCount: notifications.notificationItems.length,
         itemBuilder: (BuildContext context, int index) {
           return Dismissible(
-            key: ValueKey(notifications.notificationItems[index]),
+            key: ValueKey(
+                "notification_${notifications.notificationItems[index]}"),
             direction: DismissDirection.endToStart,
             onDismissed: (direction) => notifications.delete(index),
             background: Container(

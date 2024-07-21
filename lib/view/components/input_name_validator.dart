@@ -17,14 +17,8 @@ class InputNameValidator extends StatefulWidget {
 }
 
 class _InputNicknameValidatorState extends State<InputNameValidator> {
-  bool? isValidNick;
-
-  Future<Widget?> selectIconByValidator(UserController userController) async {
-    if (widget.name.text.length < 4) return null;
-
-    await nickValidator(userController);
-
-    return isValidNick!
+  Widget selectIconByValidator(bool isValidNick) {
+    return isValidNick
         ? const Icon(
             Icons.check,
             color: Color.fromARGB(120, 29, 134, 33),
@@ -35,19 +29,11 @@ class _InputNicknameValidatorState extends State<InputNameValidator> {
           );
   }
 
-  Future<void> nickValidator(UserController userController) async {
-    final bool isValid = await userController.isValidUserName(widget.name.text);
-
-    setState(() {
-      isValidNick = isValid;
-    });
-    widget.isValidated(isValid);
-  }
-
   @override
   Widget build(BuildContext context) {
     final userController = Provider.of<UserController>(context);
     return TextField(
+      key: const ValueKey('name_validator'),
       onChanged: (_) {
         setState(() {});
       },
@@ -55,10 +41,18 @@ class _InputNicknameValidatorState extends State<InputNameValidator> {
       decoration: InputDecoration(
         label: const Text('Apelido'),
         suffixIcon: FutureBuilder(
-          future: selectIconByValidator(userController),
-          builder: (context, snapshot) =>
-              snapshot.data == null ? const Text('') : snapshot.data!,
-        ),
+            future: userController.isValidUserName(widget.name.text),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || widget.name.text.length < 4) {
+                return const Text('');
+              }
+
+              final data = snapshot.data ?? false;
+
+              widget.isValidated(data);
+
+              return selectIconByValidator(data);
+            }),
       ),
     );
   }

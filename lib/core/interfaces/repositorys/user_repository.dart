@@ -9,7 +9,7 @@ abstract class IUserRepository implements IRepository {
   IUserRepository({required this.store});
 
   Stream<List<ChatContact>> getUserContacts();
-  Future<ChatUser> getUserByName(String name);
+  Future<ChatUser?> getUserByName(String name);
   Future<ChatUser> getUserById(String id);
   Future<void> addUserContact(ChatContact contact);
   Future<void> updateCurrentUser(Map<String, dynamic> data);

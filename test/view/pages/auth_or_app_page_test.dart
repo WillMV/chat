@@ -5,57 +5,81 @@ import 'package:chat/core/repositorys/auth_repository.dart';
 import 'package:chat/core/repositorys/notification_repository.dart';
 import 'package:chat/core/repositorys/user_repository.dart';
 import 'package:chat/view/pages/auth_or_app_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:provider/provider.dart';
 
-class MockFirebaseAuth with Mock implements FirebaseAuth {}
+class MockUserRepository with Mock implements UserRepository {}
 
-class MockFirebaseMessaging with Mock implements FirebaseMessaging {}
+class MockAuthRepository with Mock implements AuthRepository {}
 
-class MockFirebaseFirestore with Mock implements FirebaseFirestore {}
-
-class MockFlutterSecureStorage with Mock implements FlutterSecureStorage {}
+class MockNotificationRepository with Mock implements NotificationRepository {}
 
 void main() {
-  late MockFirebaseAuth mockFirebaseAuth;
-  late MockFirebaseMessaging mockFirebaseMessaging;
-  late MockFirebaseFirestore mockFirebaseFirestore;
-  late MockFlutterSecureStorage mockFlutterSecureStorage;
+  late MockNotificationRepository mockNotificationRepository;
+  late MockAuthRepository mockAuthRepository;
+  late MockUserRepository mockUserRepository;
   late AuthController authController;
   late NotificationController notificationController;
   late UserController userController;
 
+  Widget _testable() {
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => notificationController),
+          ChangeNotifierProvider(create: (_) => authController),
+          ChangeNotifierProvider(create: (_) => userController),
+        ],
+        child: const MaterialApp(
+          home: AuthOrAppPage(),
+        ));
+  }
+
   setUpAll(() {
-    mockFirebaseMessaging = MockFirebaseMessaging();
-    mockFlutterSecureStorage = MockFlutterSecureStorage();
-    mockFirebaseAuth = MockFirebaseAuth();
-    mockFirebaseFirestore = MockFirebaseFirestore();
-    userController = UserController(
-        userRepository: UserRepository(store: mockFirebaseFirestore));
-    authController =
-        AuthController(authRepository: AuthRepository(auth: mockFirebaseAuth));
+    mockNotificationRepository = MockNotificationRepository();
+    mockUserRepository = MockUserRepository();
+    mockAuthRepository = MockAuthRepository();
+
+    userController = UserController(userRepository: mockUserRepository);
+    authController = AuthController(authRepository: mockAuthRepository);
     notificationController = NotificationController(
-      notificationRepository: NotificationRepository(
-          messaging: mockFirebaseMessaging, storage: mockFlutterSecureStorage),
-    );
+        notificationRepository: mockNotificationRepository);
   });
 
-  testWidgets('auth or app page ...', (tester) async {
-    await tester.pumpWidget(MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => notificationController),
-        ChangeNotifierProvider(create: (_) => authController),
-        ChangeNotifierProvider(create: (_) => userController),
-      ],
-      child: const Material(
-        child: AuthOrAppPage(),
-      ),
-    ));
+  group('Testa a tela de carregamento', () {
+    testWidgets('Deve exibir tela de carregamento inicialmente.',
+        (tester) async {
+      await tester.pumpWidget(_testable());
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
+    testWidgets('Deve exibir tela de carregamento após o init.',
+        (tester) async {
+      when(
+        () => mockNotificationRepository.init(),
+      ).thenAnswer((_) async {
+        Future.delayed(const Duration(seconds: 1));
+      });
+
+      // when(() => mockAuthRepository.userChanges).thenAnswer((_) {
+      //   return Stream.multi((p0) {}) as Stream<ChatUser?> Function();
+      // });
+
+      await tester.pumpWidget(MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => notificationController),
+          ChangeNotifierProvider(create: (_) => authController),
+          ChangeNotifierProvider(create: (_) => userController),
+        ],
+        child: const MaterialApp(
+          home: AuthOrAppPage(),
+        ),
+      ));
+
+      await tester.pump(const Duration(seconds: 10));
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    });
   });
 }

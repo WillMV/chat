@@ -1,9 +1,9 @@
 import 'package:chat/core/interfaces/controllers/controller.dart';
-import 'package:chat/core/interfaces/repositorys/notification_repository.dart';
 import 'package:chat/core/models/chat_notification.dart';
+import 'package:chat/core/repositorys/notification_repository.dart';
 
 abstract class INotificationController implements IController {
-  final INotificationRepository notificationRepository;
+  final NotificationRepository notificationRepository;
 
   INotificationController({required this.notificationRepository});
 

@@ -15,13 +15,6 @@ class _InputMessageState extends State<InputMessage> {
   late AuthController authController;
   late ChatController chatController;
 
-  @override
-  void initState() {
-    super.initState();
-    authController = Provider.of<AuthController>(context);
-    chatController = Provider.of<ChatController>(context);
-  }
-
   final _msg = TextEditingController();
   final _focusNode = FocusNode();
 
@@ -34,20 +27,23 @@ class _InputMessageState extends State<InputMessage> {
   void _sendMessage() async {
     if (_msg.text.isNotEmpty) {
       final currentUser = authController.currentUser;
-      if (currentUser == null) {
-        authController.logout();
+      if (currentUser != null) {
+        await chatController.save(_msg.text, currentUser, widget.chatId);
+        _focusNode.requestFocus();
+        _msg.text = '';
       }
-      await chatController.save(_msg.text, currentUser!, widget.chatId);
-      _focusNode.requestFocus();
-      _msg.text = '';
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    authController = Provider.of<AuthController>(context);
+    chatController = Provider.of<ChatController>(context);
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
+        key: const Key('msg_input'),
         controller: _msg,
         focusNode: _focusNode,
         onSubmitted: (_) => _sendMessage(),
@@ -68,6 +64,7 @@ class _InputMessageState extends State<InputMessage> {
             onPressed: null,
           ),
           suffixIcon: IconButton(
+            key: const Key('send_btn'),
             icon: const Icon(Icons.send),
             onPressed: _sendMessage,
           ),

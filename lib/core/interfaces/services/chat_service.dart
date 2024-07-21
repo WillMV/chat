@@ -1,10 +1,10 @@
-import 'package:chat/core/interfaces/repositorys/chat_repository.dart';
 import 'package:chat/core/interfaces/services/service.dart';
 import 'package:chat/core/models/chat_message.dart';
 import 'package:chat/core/models/chat_user.dart';
+import 'package:chat/core/repositorys/chat_repository.dart';
 
 abstract class IChatService implements IService {
-  final IChatRepository chatRepository;
+  final ChatRepository chatRepository;
 
   IChatService({required this.chatRepository});
 

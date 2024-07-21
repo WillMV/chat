@@ -8,15 +8,12 @@ class ChatService extends IChatService {
   @override
   Future<ChatMessage?> save(String text, ChatUser user, String chatId) async {
     final message = await chatRepository.save(
-        chatId,
-        ChatMessage(
-          id: '',
-          text: text,
-          createdAt: DateTime.now(),
-          userId: user.id,
-          userName: user.name,
-          userImage: user.imageUrl,
-        ));
+      chatId: chatId,
+      text: text,
+      userId: user.id,
+      userName: user.name,
+      userImage: user.imageUrl ?? 'assets/images/avatar.png',
+    );
 
     return message;
   }
